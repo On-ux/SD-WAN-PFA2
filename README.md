@@ -1,141 +1,110 @@
-# SD-WAN-PFA2
-# SD-WAN Implementation using EVE-NG and Cisco SD-WAN
+# Cisco SD-WAN Implementation
 
-## Overview
+## 1. Project Overview
 
-This project presents the design, deployment, and validation of a **Software-Defined Wide Area Network (SD-WAN)** architecture in a virtual lab environment using **EVE-NG** and Cisco SD-WAN components.
+This project focuses on the implementation of a Cisco SD-WAN solution using the Cisco Viptela architecture in an EVE-NG environment.
 
-The goal was to build a scalable and centralized network connecting multiple sites while demonstrating the advantages of SD-WAN over traditional WAN architecture in terms of flexibility, management, and performance.
+The objective was to build a centralized SD-WAN infrastructure connecting the Ministry of Education headquarters with three school branches located in Gabès, Sfax, and Sousse.
 
----
+The solution uses centralized management and control components to establish secure communication between geographically distributed sites through MPLS and Business Internet transport networks.
 
-## Objectives
+## 2. Project Objectives
 
-- Design a multi-site SD-WAN topology
-- Deploy Cisco SD-WAN controllers and edge devices
-- Configure secure communication between devices
-- Implement underlay and overlay networking
-- Configure routing and traffic exchange
-- Validate end-to-end connectivity between sites
-- Simulate an enterprise SD-WAN environment for testing and learning
+- Implement a Cisco SD-WAN architecture using EVE-NG.
+- Deploy and configure vManage, vSmart, vBond, and vEdge devices.
+- Establish MPLS and Business Internet transport networks.
+- Configure underlay and overlay connectivity.
+- Establish secure IPsec tunnels between sites.
+- Verify routing and connectivity using OMP and ping tests.
+- Monitor the network through the vManage dashboard.
 
----
+## 3. Technologies and Tools
 
-## Technologies Used
+- Cisco SD-WAN (Viptela 20.6.2)
+- EVE-NG
+- Cisco IOL L2 switches
+- Cisco IOL L3 routers
+- vManage
+- vSmart
+- vBond
+- vEdge
+- MPLS
+- IPsec
+- OMP (Overlay Management Protocol)
 
-- **EVE-NG** – network emulation platform
-- **Cisco SD-WAN**
-  - vManage
-  - vBond
-  - vSmart
-  - vEdge
-- **Cisco IOL images**
-- **VMware Workstation**
-- **PuTTY** – remote CLI access
-- **WinSCP** – secure file transfer
+## 4. Network Architecture
 
----
+The topology consists of one headquarters and three remote branches.
 
-## Architecture
+| Site ID | Location |
+|---|---|
+| 10 | Ministry of Education Headquarters |
+| 20 | Sfax |
+| 30 | Gabès |
+| 40 | Sousse |
+| 100 | SD-WAN Controllers |
 
-The deployed architecture includes:
+The architecture includes three main SD-WAN controllers:
 
-- **vManage** → centralized management plane
-- **vBond** → orchestration and device authentication
-- **vSmart** → control plane and policy distribution
-- **vEdge routers** → data plane and branch connectivity
+- **vManage:** Centralized management and monitoring.
+- **vSmart:** Centralized control and routing information distribution.
+- **vBond:** Orchestrates the initial authentication and connection of SD-WAN devices.
 
-### Network Design
-- Headquarter site
-- Multiple branch sites
-- MPLS transport
-- Internet transport
-- Overlay tunnels between WAN edges
+The vEdge routers provide connectivity between the different sites.
 
----
+## 5. Network Addressing
 
-## Features Implemented
+### 5.1 Control Network
 
-### Underlay Network
-- Static IP addressing
-- Interface configuration
-- Basic WAN transport connectivity
+| Device | IP Address |
+|---|---|
+| vManage | 192.168.137.10 |
+| vSmart | 192.168.137.20 |
+| vBond | 192.168.137.30 |
+| vEdge HQ | 192.168.137.50 |
+| vEdge Sfax | 192.168.137.60 |
+| vEdge Gabès | 192.168.137.80 |
+| vEdge Sousse | 192.168.137.90 |
 
-### Overlay Network
-- OMP routing configuration
-- TLOC establishment
-- Secure tunnel creation
+Control network: `192.168.137.0/24`
 
-### Security
-- Certificate installation
-- Authentication between SD-WAN devices
-- Secure control connections
+### 5.2 Transport Networks
 
-### Validation
-- Site-to-site ping tests
-- Routing verification
-- Tunnel status verification
-- Monitoring via vManage dashboard
+**MPLS Network:** `10.0.0.0/24`
 
----
+| Device | IP Address |
+|---|---|
+| R7 | 10.0.0.1 |
+| HQ | 10.0.0.2 |
+| Sfax | 10.0.0.3 |
+| Gabès | 10.0.0.4 |
+| Sousse | 10.0.0.5 |
 
+**Business Internet Network:** `20.0.0.0/24`
 
-## Lab Validation
+### 5.3 Internal LAN Networks
 
-Validation tests performed include:
+| Site | Network |
+|---|---|
+| HQ | 30.0.0.0/24 |
+| Sfax | 40.0.0.0/24 |
+| Gabès | 50.0.0.0/24 |
+| Sousse | 60.0.0.0/24 |
 
-- Successful controller communication
-- WAN Edge registration to vManage
-- OMP route exchange verification
-- IPsec tunnel establishment
-- Inter-site connectivity tests between branches
-- Dashboard monitoring through vManage
+## 6. VPN Configuration
 
----
+The project uses three VPNs:
 
-## Results
+- **VPN 0:** Transport network (underlay).
+- **VPN 512:** Management network.
+- **VPN 10:** Service network for communication between sites.
 
-The implementation demonstrated that SD-WAN provides:
+## 7. EVE-NG Installation and Configuration
 
-- Centralized network management
-- Improved scalability
-- Simplified deployment
-- Better flexibility than traditional WAN
-- Secure communication between distributed sites
-- Efficient traffic management across multiple transports
+The Cisco SD-WAN virtual images were installed in EVE-NG.
 
----
+Example of extracting a vSmart image:
 
-## Learning Outcomes
-
-Through this project I gained practical experience with:
-
-- SD-WAN architecture and deployment
-- Cisco SD-WAN ecosystem
-- EVE-NG lab building
-- Routing and overlay technologies
-- Network troubleshooting
-- Enterprise WAN design
-
----
-
-## Author
-
-**Ons Boutouta**  
-2nd Year Telecommunications Engineering Student  
-National Engineering School of Tunis (ENIT)
-
----
-
-## Acknowledgments
-
-Special thanks to:
-
-- **Mrs. Meriem Kassar** – Academic Supervisor
-- **Mr. Imed Jlailia** – Company Supervisor
-
----
-
-## License
-
-This project was developed for academic and educational purposes.
+```bash
+cd /opt/unetlab/addons/qemu/vsmart-20.6.2/
+tar -xzf vsmart-20.6.2-001.tgz
